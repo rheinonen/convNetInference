@@ -1,13 +1,11 @@
 #ifndef __ConvLayer__
 #define __ConvLayer__
 
-#include "Layer"
-
 using namespace std;
 
-namespace fin {
+namespace Layers {
 
-class ConvLayer :public Layer {
+class ConvLayer {
 private:
   unsigned int fs_x;
   unsigned int fs_y;
