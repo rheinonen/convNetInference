@@ -46,8 +46,8 @@ void ConvLayer::im2col(const float* input, float* output) {
         for (in_row; in_row < this->input_shape[0] - this->padding[0]; in_row+=this->stride[0]) {
           int in_col = -this->padding[1] + k_col * this->dilation[1];
           for (in_col; in_col < this->input_shape[1] - this->padding[1]; in_col+=this->stride[1]) {
-            int out_col = in_col / this->stride[1] +
-              in_row * this->input_shape[1] / this->stride[0] + ch * channel_size;
+            int out_col = (in_col + this->padding[1]) / this->stride[1] +
+              this->input_shape[1] * (in_row + this->padding[0]) / this->stride[0] + ch * channel_size;
 
             if (in_row < 0 || in_row > this->input_shape[0] || in_row < 0 || in_row > this->input_shape[0]) {
               output[out_row][out_col] = 0;
@@ -68,7 +68,13 @@ void ConvLayer::im2col(const float* input, float* output) {
  * @param output - an initalized 3D array to hold the output
  */
 void ConvLayer::col2im(const float* input, float* output) {
-  // @TODO - implement me
+  for (int ch = 0; ch < this->output_shape[2]; ch++) {
+    for (int row = 0; row < this->output_shape[1]; row++) {
+      for (int col = 0; col < this->output_shape[0]; col++) {
+        output[row][col][ch] = input[ch][col + row * this->output_shape[1]];
+      }
+    }
+  }
 }
 
 /**
@@ -99,7 +105,7 @@ void ConvLayer::filterMatrix(const float* fm) {
  *
  * @param fm - an initalized 2D array to hold the output
  */
-void ConvLayer::forwardProp(const float* input, float* result, bool perform_col2im=true) {
+void ConvLayer::forwardProp(const float* input, float* output, const bool perform_col2im) {
   if (this->output_shape.size() != 3)
     throw "ForwardProp output must be of dimension 3.";
 
@@ -128,11 +134,11 @@ void ConvLayer::forwardProp(const float* input, float* result, bool perform_col2
       this->kernel_shape[2]
     );
 
-    this->col2im(mat_prod, result);
+    this->col2im(mat_prod, output);
   } else {
     for (int row=0; row < this->kernel_shape[2]; row++) {
       for (int col=0; col < this->im2col_output_shape[1]; col++) {
-        result[row][col] = biases[row];
+        output[row][col] = biases[row];
       }
     }
     cblas_dgemm(
@@ -148,7 +154,7 @@ void ConvLayer::forwardProp(const float* input, float* result, bool perform_col2
       im_matrix,
       this->im2col_output_shape[0],
       1.0,
-      result,
+      output,
       this->kernel_shape[2]
     );
   }

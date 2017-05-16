@@ -30,7 +30,7 @@ public:
     const float* biases
   ) {};
 
-  void forwardProp(int dim_x, int dim_y, int n_channels, float &input) {};
+  void forwardProp(const float* input, float* output, const bool perform_col2im) {};
 
   void forwardPropThreaded(int dim_x, int dim_y, int n_channels, float &input) {};
 
