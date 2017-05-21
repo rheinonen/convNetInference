@@ -9,6 +9,7 @@ using namespace std;
 int main(int argc, char* argv[]) {
   network::Network _net;
 
+  // argv[1] should be something like $PATH_TO_LIB/src/proto/alexnet.pb
   fstream input(argv[1], ios::in | ios::binary);
   if (!_net.ParseFromIstream(&input)) {
     cerr << "Failed to parse network protobuf." << endl;
