@@ -39,18 +39,18 @@ Network::Network(network::Network _net) {
 };
 
 void Network::classify(const float* img_data) {
-  float* output_it = img_data;
+  float* input = img_data;
   Layer* layer_it = &layers[first_layer];
   bool go_to_next_layer = true;
 
   while (go_to_next_layer) {
     float output[layer_it->output_size];
 
-    layer_it->forwardProp(image_data, output);
+    layer_it->forwardProp(input, output);
 
     // @TODO - make this work. as is, output will go out of scope on the next
     //         iteration of the loop and the output iterator will point to nothing
-    output_it = &output;
+    input = &output;
 
     if (layer_it->next == "eon") {
       go_to_next_layer = false;
