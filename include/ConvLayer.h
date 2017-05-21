@@ -35,7 +35,7 @@ public:
     const char* next
   ) {};
 
-  void forwardProp(const float* input, float* output, const bool perform_col2im) {};
+  void forwardProp(const float* input, float* output) {};
 
   void forwardPropThreaded(int dim_x, int dim_y, int n_channels, float &input) {};
 

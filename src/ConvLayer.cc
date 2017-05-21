@@ -27,13 +27,6 @@ ConvLayer::ConvLayer (
     im2col_output_shape[i] = (input_shape[i] + 2 * padding[i] -
       (dilation[i] * (kernel_shape[i] - 1) + 1)) / stride[i] + 1;
   }
-
-  for (int row = 0; row < this->kernel_shape[2]; row++) {
-    for (int col = 0; col < this->im2col_output_shape[1]; col++) {
-      this[]
-      output[row][col] = biases[row];
-    }
-  }
 };
 
 /**
@@ -124,7 +117,14 @@ void ConvLayer::filterMatrix(const float* fm) {
  *
  * @param fm - an initalized 2D array to hold the output
  */
-void ConvLayer::forwardProp(const float* input, float* output, const bool perform_col2im) {
+void ConvLayer::forwardProp(const float* input, float* output) {
+  // Initialize the output with the biases
+  for (int row = 0; row < this->kernel_shape[2]; row++) {
+    for (int col = 0; col < this->im2col_output_shape[1]; col++) {
+      output[row][col] = biases[row];
+    }
+  }
+
   float im_matrix[this->im2col_output_shape[0] * this->im2col_output_shape[1]];
   this->im2col(input, im_matrix);
 
@@ -136,12 +136,12 @@ void ConvLayer::forwardProp(const float* input, float* output, const bool perfor
     this->im2col_output_shape[1],
     this->im2col_output_shape[0],
     1.0,
-    (*this->weights),
+    *weights,
     this->kernel_shape[2],
     im_matrix,
     this->im2col_output_shape[0],
     1.0,
-    ouput,
+    output,
     this->kernel_shape[2]
   );
 }

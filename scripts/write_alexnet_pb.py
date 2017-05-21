@@ -6,7 +6,7 @@ LAYER_FIELD_NAMES = ["name", "type", "prev", "next"]
 LAYER_PARAMETER_NAMES = ["input_shape", "output_shape", "weights", "biases", "kernel_shape", "stride",
                          "padding", "dilation", "apply_col2im", "local_size", "alpha", "beta", "class_names"]
 
-alex_net_weights = np.load("../assets/bvlc_alexnet.npy").item()
+alex_net_weights = np.load("./bvlc_alexnet.npy").item()
 
 # TODO - finish adding layers
 architecture = [{
