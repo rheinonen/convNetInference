@@ -2,22 +2,7 @@ syntax = "proto2";
 
 package network;
 
-message Layer {
-  required string type = 1;
-  required LayerParams params = 2;
-  repeated Layer prev = 3;
-  repeated Layer next = 4;
-}
-
-message Network {
-  required string name = 1;
-  required uint32 num_layers = 5;
-  optional bool use_threads = 16 [default = false];
-  optional bool use_gpu = 17 [default = true];
-  repeated Layer layers = 8;
-}
-
-message LayerParams {
+message LayerParam {
   // Common to every layer
   repeated uint32 input_shape = 9;
   repeated uint32 output_shape = 10;
@@ -29,21 +14,38 @@ message LayerParams {
   repeated uint32 stride = 12;
 
   // Convolutional layer params
-  repeated uint32 padding = 12;
-  optional uint32 dilation = 13 [default = 1];
+  repeated uint32 padding = 13;
+  optional uint32 dilation = 16 [default = 1];
   optional bool apply_col2im = 14 [default = true];
 
   // LRN Layer Params
-  required uint32 local_size = 15;
-  optional float alpha = 18 [default = 0.0001];
-  optional float beta = 19 [default = 0.75];
+  optional uint32 local_size = 15;
+  optional float alpha = 19 [default = 1.];
+  optional float beta = 20 [default = 0.75];
 
   // ReLu Layer Params
 
   // MaxPool Layer Params
+  optional string pool_fn = 24;
 
   // Fully-Connected Layer Params
 
   // Softmax Layer Params
-  repeated string class_names = 20;
+  repeated string class_names = 21;
+}
+
+message Layer {
+  required string name = 22;
+  required string type = 23;
+  required LayerParam params = 2;
+  repeated string prev = 3;
+  repeated string next = 4;
+}
+
+message Network {
+  required string name = 1;
+  required uint32 num_layers = 5;
+  optional bool use_threads = 17 [default = false];
+  optional bool use_gpu = 18 [default = true];
+  repeated Layer layers = 8;
 }
