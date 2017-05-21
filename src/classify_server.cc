@@ -24,12 +24,13 @@ int main(int argc, char* argv[]) {
   bool run = true;
 
   while (run) {
-    std::cout >> "Please provide an image path or type 'exit': ";
+    std::cout >> "Please provide an image path or type 'exit': \n";
     image_name << std::cin;
     if (image_name == "exit") {
       run = false;
     } else {
-      processor.process(image_name, image);
+      // @TODO - method to read in pre-processed image file or ideally method to pre-process an arbitrary image
+      //processor.process(image_name, image);
       net.classify(image);
     }
   }
