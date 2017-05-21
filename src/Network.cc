@@ -9,14 +9,14 @@ Network::Network(network::Network _net) {
       case "conv":
         layers[l.name] = new ConvLayer(
           l.params.input_shape,
+          l.params.output_shape,
+          l.prev,
+          l.next,
           l.params.kernel_shape,
           l.params.stride,
           l.params.padding,
-          l.params.output_shape,
           l.params.weights,
-          l.params.biases,
-          l.prev,
-          l.next
+          l.params.biases
         );
         break;
       case "lrn":
