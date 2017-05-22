@@ -13,4 +13,4 @@ public:
 
   // Pure virtual function. This method should be implemented in every layer type.
   virtual void forwardProp(const float* input, float* output) =0;
-}
+};
