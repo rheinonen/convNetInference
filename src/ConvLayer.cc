@@ -117,11 +117,14 @@ void ConvLayer::filterMatrix(const float* fm) {
  *
  * @param fm - an initalized 2D array to hold the output
  */
-void ConvLayer::forwardProp(const float* input, float* output) {
+void ConvLayer::forwardProp(const vector<float> &input, vector<float> &output) {
   // Initialize the output with the biases
-  for (int row = 0; row < this->kernel_shape[2]; row++) {
-    for (int col = 0; col < this->im2col_output_shape[1]; col++) {
-      output[row][col] = biases[row];
+  int row_size = this->im2col_output_shape[1];
+  int col_size = this->kernel_shape[2];
+
+  for (int row = 0; row < col_size; row++) {
+    for (int col = 0; col < row_size; col++) {
+      output[row * row_size + col] = biases[row];
     }
   }
 

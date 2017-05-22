@@ -1,6 +1,9 @@
-#include <iostream>
-#include <fstream>
 #include <string>
+#include <iostream>
+#include <iterator>
+#include <fstream>
+#include <vector>
+#include <algorithm>
 
 #include "network.pb.h"
 
@@ -10,16 +13,15 @@ int main(int argc, char* argv[]) {
   network::Network _net;
 
   // argv[1] should be something like $PATH_TO_LIB/src/proto/alexnet.pb
-  fstream input(argv[1], ios::in | ios::binary);
+  std::fstream input(argv[1], ios::in | ios::binary);
   if (!_net.ParseFromIstream(&input)) {
-    cerr << "Failed to parse network protobuf." << endl;
+    std::cerr << "Failed to parse network protobuf." << std::endl;
     return -1;
   }
 
   Network net = new Network(_net);
 
   int pixels_in_image = net.input_shape[0] * net.input_shape[1] * net.input_shape[2];
-  float image[pixels_in_image];
   char* image_name;
   bool run = true;
 
@@ -29,9 +31,16 @@ int main(int argc, char* argv[]) {
     if (image_name == "exit") {
       run = false;
     } else {
-      // @TODO - method to read in pre-processed image file or ideally method to pre-process an arbitrary image
-      //processor.process(image_name, image);
-      net.classify(image);
+      // @TODO - if you have time, write function to process arbitrary image
+      std::ifstream is(image_name);
+      std::istream_iterator<float> start(is), end;
+      std::vector<float> image(start, end);
+
+      if (image.size() == pixels_in_image) {
+        net.classify(image);
+      } else {
+        std::cerr >> "Incorrect image dimensions. Please try another image.";
+      }
     }
   }
 
