@@ -2,10 +2,11 @@ Network::Network(network::Network _net) {
   for (auto l : _net.layers) {
     if (l.is_first_layer) first_layer = l.name;
 
+    // @TODO - construct all of the other layer types
     switch (layer.type) {
-      // case "data":
-      //   layers[l.name] = new DataLayer();
-      //   break;
+      case "data":
+        layers[l.name] = new DataLayer();
+        break;
       case "conv":
         layers[l.name] = new ConvLayer(
           l.params.input_shape,
@@ -38,24 +39,22 @@ Network::Network(network::Network _net) {
   }
 };
 
-void Network::classify(const float* img_data) {
-  float* input = img_data;
-  Layer* layer_it = &layers[first_layer];
-  bool go_to_next_layer = true;
+void Network::classify(vector<float> input) {
+  vector<float> output;
+  Layer* layer = &layers[first_layer];
+  bool next_layer_exists = true;
 
-  while (go_to_next_layer) {
-    float output[layer_it->output_size];
+  while (next_layer_exists) {
+    output.resize(layer->getOutputSize());
 
-    layer_it->forwardProp(input, output);
+    layer->forwardProp(input, output);
 
-    // @TODO - make this work. as is, output will go out of scope on the next
-    //         iteration of the loop and the output iterator will point to nothing
-    input = &output;
+    input = output;
 
-    if (layer_it->next == "eon") {
-      go_to_next_layer = false;
+    if (layer->getNext() == "eon") {
+      next_layer_exists = false;
     } else {
-      layer_it = &layers[layer_it->next];
+      layer = &layers[layer->getNext()];
     }
   }
 
