@@ -42,4 +42,4 @@ public:
   void forwardPropGPU(int dim_x, int dim_y, int n_channels, float &input) {};
 }
 
-}
+};
