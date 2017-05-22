@@ -27,3 +27,10 @@
 *.exe
 *.out
 *.app
+
+# Compiled Python
+*.pyc
+*.npy
+
+# Protobuf
+*.pb
