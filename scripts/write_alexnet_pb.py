@@ -1,12 +1,14 @@
 import network_pb2
 import numpy as np
+import os
 
 # Constants
 LAYER_FIELD_NAMES = ["name", "type", "prev", "next"]
 LAYER_PARAMETER_NAMES = ["input_shape", "output_shape", "weights", "biases", "kernel_shape", "stride",
                          "padding", "dilation", "apply_col2im", "local_size", "alpha", "beta", "class_names"]
 
-alex_net_weights = np.load("./bvlc_alexnet.npy").item()
+
+alex_net_weights = np.load(os.path.join(os.path.dirname(__file__), "bvlc_alexnet.npy")).item()
 
 architecture = [{
     "name": "data",
@@ -264,5 +266,7 @@ for l in architecture:
         else:
             setattr(layer.params, param_name, p)
 
-with open("../src/proto/alexnet.pb", "wb") as f:
+output_path = os.path.realpath(os.path.join(os.path.dirname(__file__), "..", "src", "proto", "alexnet.pb"))
+
+with open(output_path, "wb") as f:
     f.write(net.SerializeToString())
